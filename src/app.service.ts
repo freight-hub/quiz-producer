@@ -16,16 +16,14 @@ export class AppService implements OnApplicationBootstrap {
   async onApplicationBootstrap(): Promise<any> {
     const producer = await this.client.connect();
 
-    const rawdata = readFileSync(join(process.cwd(), './data/full.json'));
+    const rawdata = readFileSync(join(process.cwd(), './data/basic.json'));
     const data = JSON.parse(rawdata.toLocaleString());
     for (const event of data) {
       event.timestamp = new Date(event.timestamp);
-      console.log('');
       await producer.send({
-        topic: 'large-quiz',
+        topic: 'playing_with_projections_events',
         messages: [
           {
-            key: event.payload.quiz_id, // Distribute to partitions based on quiz_id
             value: JSON.stringify(event),
           },
         ],
